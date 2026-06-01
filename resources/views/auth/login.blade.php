@@ -42,7 +42,8 @@
             body: JSON.stringify({
                 login: document.getElementById('loginInput').value,
                 password: document.getElementById('password').value
-            })
+            }),
+            credentials: 'same-origin',
         });
 
         const result = await response.json();

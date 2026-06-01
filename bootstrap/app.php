@@ -12,10 +12,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->api(append: [
-        \App\Http\Middleware\AddAuthHeaderFromCookie::class,
-    ]);
-    $middleware->redirectGuestsTo(fn () => route('login'));
+        $middleware->api(prepend: [
+            \App\Http\Middleware\AddAuthHeaderFromCookie::class,
+        ]);
+        $middleware->web(prepend: [
+            \App\Http\Middleware\AddAuthHeaderFromCookie::class,
+        ]);
+        $middleware->redirectGuestsTo(fn () => route('login'));
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -84,37 +84,50 @@ class AuthController extends Controller
 
         $credentials = [
             $loginType => $request->login,
-            'password' => $request->password
+            'password' => $request->password,
         ];
 
-        // Gunakan web guard dengan session-based authentication
-        if (!Auth::attempt($credentials)) {
+        if (!$token = auth('api')->attempt($credentials)) {
             return response()->json(['error' => 'Username/Email atau password salah'], 401);
         }
 
-        $user = Auth::user();
+        $user = auth('api')->user();
+
+        $cookie = cookie(
+            'jwt_token',
+            $token,
+            60,
+            '/',
+            null,
+            false,
+            true,
+            false,
+            'Lax'
+        );
 
         return response()->json([
             'status' => 'success',
             'message' => 'Login berhasil',
-            'user' => $user
-        ], 200);
+            'user' => $user,
+        ], 200)->withCookie($cookie);
     }
 
-// 3. LOGOUT
-public function logout()
-{
-    Auth::logout();
+    // 3. LOGOUT
+    public function logout()
+    {
+        auth('api')->logout();
 
-    return response()->json([
-        'status' => 'success',
-        'message' => 'Berhasil logout'
-    ], 200);
-}
+        $cookie = cookie()->forget('jwt_token');
 
-// 4. GET ME
-public function me()
-{
-    return response()->json(Auth::user(), 200);
-}
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Berhasil logout',
+        ], 200)->withCookie($cookie);
+    }
+
+    // 4. GET ME
+    public function me()
+    {
+        return response()->json(auth('api')->user(), 200);
+    }
 }
