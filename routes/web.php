@@ -10,4 +10,6 @@ Route::get('/', function () {
 
 Route::get('/login', [ViewDataController::class, 'showLogin'])->name('login');
 Route::get('/register', [ViewDataController::class, 'showRegister']);
-Route::get('/dashboard', [ViewDataController::class, 'showDashboard']);
+Route::middleware(['auth:api'])->group(function () {
+    Route::get('/dashboard', [ViewDataController::class, 'showDashboard']);
+});
