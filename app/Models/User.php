@@ -72,4 +72,22 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    /**
+     * Relasi ke model Complaint (Pengaduan).
+     * Menyatakan bahwa satu User (Masyarakat) dapat membuat banyak Pengaduan.
+     */
+    public function complaints()
+    {
+        return $this->hasMany(Complaint::class);
+    }
+
+    // Tambahkan fungsi ini di dalam class User sebelum tanda penutup }
+    /**
+     * Mengetahui apakah pengguna adalah admin atau bukan secara dinamis
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
 }

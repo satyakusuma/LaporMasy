@@ -19,6 +19,9 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\AddAuthHeaderFromCookie::class,
         ]);
         $middleware->redirectGuestsTo(fn () => route('login'));
+        $middleware->alias([
+        'is_admin' => \App\Http\Middleware\IsAdmin::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
